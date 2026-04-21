@@ -1,0 +1,12 @@
+C:\>cd "Archivos de programa"
+C:\Archivos de programa>cd PostgreSQL
+C:\Archivos de programa\PostgreSQL>cd 18
+C:\Archivos de programa\PostgreSQL\18>cd bin
+
+C:\Archivos de programa\PostgreSQL\18\bin>psql -h localhost -U postgres -p 5433 -f pe_ds_sgsp_prod.sql sigesapol_marzo
+
+
+# revisar puerto, aveces cambia 5432 | 5433
+# sigesapol_marzo : nombre de base de datos creada previamente en PgAdmin
+# pe_ds_sgsp_prod.sql : archivo pegado en la carpeta Archivos de programa/PostgreSQL/18/bin/
+# 18 es la versión del PostgreSQL instalado.
