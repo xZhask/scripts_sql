@@ -1,9 +1,5 @@
-C:\>cd "Archivos de programa"
-C:\Archivos de programa>cd PostgreSQL
-C:\Archivos de programa\PostgreSQL>cd 18
-C:\Archivos de programa\PostgreSQL\18>cd bin
-
-C:\Archivos de programa\PostgreSQL\18\bin>psql -h localhost -U postgres -p 5433 -f pe_ds_sgsp_prod.sql sigesapol_marzo
+C:\>cd "Archivos de programa"\PostgreSQL\18\bin
+C:\Archivos de programa\PostgreSQL\18\bin>psql -h localhost -U postgres -p 5433 -f pe_ds_sgsp_prod.sql sigesapol_mayo
 
 
 # revisar puerto, aveces cambia 5432 | 5433
