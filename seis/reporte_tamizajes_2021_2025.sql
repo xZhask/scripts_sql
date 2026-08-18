@@ -1,8 +1,14 @@
 -- Query para obtener atenciones de tamizajes (CPMS / CIE10) de 2021 a 2025
--- según especificaciones de tipos de atención y rangos de edad.
+-- según especificaciones de tipos de atención, IPRESS y rangos de edad.
 
 SELECT 
     a.id_atencion,
+    a.ID_IPRESS AS codigo_ipress,
+    i.DESCRIPCIONLOCAL AS nombre_ipress,
+    CASE 
+        WHEN a.ID_IPRESS IN ('00011794', '00014718', '00016094', '00011833') THEN 'NIVEL II'
+        ELSE 'NIVEL I'
+    END AS nivel_ipress,
     p.documento AS documento_paciente,
     p.NOMBRECOMPLETO AS nombre_paciente,
     p.SEXO AS sexo,
@@ -12,7 +18,7 @@ SELECT
         ELSE 'OTRO'
     END AS tipo_beneficiario,
     ad.ID_CPT AS codigo_cpms_cie10,
-    CONVERT(BINARY(CONVERT(proc.NOMBRE USING latin1)) USING utf8mb4) AS descripcion_cpms_cie10,
+    proc.NOMBRE AS descripcion_cpms_cie10,
     YEAR(a.fecha_atencion) AS anio_atencion,
     a.PACIENTE_EDAD AS edad,
     CASE 
@@ -29,6 +35,8 @@ INNER JOIN atencion_diagnostico ad
     ON ad.ID_ATENCION = a.id_atencion
 INNER JOIN personamast p 
     ON p.PERSONA = a.paciente_id
+INNER JOIN ac_sucursal i 
+    ON i.SUCURSAL = a.ID_IPRESS
 INNER JOIN ss_ge_procedimientomedico proc 
     ON proc.CODIGOPROCEDIMIENTO = ad.ID_CPT
 WHERE a.id_tipo_atencion = 'PR'
@@ -50,6 +58,12 @@ UNION ALL
 
 SELECT 
     a.id_atencion,
+    a.ID_IPRESS AS codigo_ipress,
+    i.DESCRIPCIONLOCAL AS nombre_ipress,
+    CASE 
+        WHEN a.ID_IPRESS IN ('00011794', '00014718', '00016094', '00011833') THEN 'NIVEL II'
+        ELSE 'NIVEL I'
+    END AS nivel_ipress,
     p.documento AS documento_paciente,
     p.NOMBRECOMPLETO AS nombre_paciente,
     p.SEXO AS sexo,
@@ -59,7 +73,7 @@ SELECT
         ELSE 'OTRO'
     END AS tipo_beneficiario,
     sd.CodigoDiagnostico AS codigo_cpms_cie10,
-    CONVERT(BINARY(CONVERT(sd.NOMBRE USING latin1)) USING utf8mb4) AS descripcion_cpms_cie10,
+    sd.NOMBRE AS descripcion_cpms_cie10,
     YEAR(a.fecha_atencion) AS anio_atencion,
     a.PACIENTE_EDAD AS edad,
     '18 - 70 años' AS rango_edad
@@ -68,6 +82,8 @@ INNER JOIN atencion_diagnostico ad
     ON ad.ID_ATENCION = a.id_atencion
 INNER JOIN personamast p 
     ON p.PERSONA = a.paciente_id
+INNER JOIN ac_sucursal i 
+    ON i.SUCURSAL = a.ID_IPRESS
 INNER JOIN ss_ge_diagnostico sd 
     ON sd.idDiagnostico = ad.id_diagnostico
 WHERE a.id_tipo_atencion IN ('AM', 'EM', 'HO')
