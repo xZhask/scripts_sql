@@ -1,6 +1,6 @@
 -- =============================================================================
 -- RESUMEN EJECUTIVO DE ATENCIONES POR PRODUCTO PRESUPUESTAL (2021-2025)
--- Base de Datos: sgcoresys
+-- Base de Datos: SEIS (sgcoresys / db_seis_marzo26)
 -- =============================================================================
 
 SELECT 
@@ -105,10 +105,10 @@ SELECT
 
     COUNT(DISTINCT a.id_atencion) AS TOTAL_ATENCIONES
 
-FROM sgcoresys.atencion a
-INNER JOIN sgcoresys.atencion_diagnostico ad 
+FROM atencion a
+INNER JOIN atencion_diagnostico ad 
     ON ad.ID_ATENCION = a.id_atencion
-LEFT JOIN sgcoresys.ss_ge_diagnostico sd 
+LEFT JOIN ss_ge_diagnostico sd 
     ON sd.IDDIAGNOSTICO = ad.ID_DIAGNOSTICO
 
 WHERE a.ID_PERIODO BETWEEN '202101' AND '202512'

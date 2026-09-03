@@ -1,7 +1,7 @@
 -- =============================================================================
 -- REPORTE DE ATENCIONES 2025 - PROCEDIMIENTOS CPT Y DIAGNÓSTICO CIE-10 Z12.8
 -- Desagregado por Grupo Etario, Sexo y Tipo de Beneficiario (Titular / Derechohabiente)
--- Base de Datos: sgcoresys
+-- Base de Datos: SEIS (sgcoresys / db_seis_marzo26)
 -- =============================================================================
 
 SELECT 
@@ -32,14 +32,14 @@ SELECT
     
     COUNT(DISTINCT a.id_atencion) AS CANTIDAD_ATENCIONES
 
-FROM sgcoresys.atencion a
-INNER JOIN sgcoresys.atencion_diagnostico ad 
+FROM atencion a
+INNER JOIN atencion_diagnostico ad 
     ON ad.ID_ATENCION = a.id_atencion
-INNER JOIN sgcoresys.personamast p 
+INNER JOIN personamast p 
     ON p.PERSONA = a.PACIENTE_ID
-LEFT JOIN sgcoresys.ss_ge_procedimientomedico proc 
+LEFT JOIN ss_ge_procedimientomedico proc 
     ON proc.CODIGOPROCEDIMIENTO = ad.ID_CPT
-LEFT JOIN sgcoresys.ss_ge_diagnostico sd 
+LEFT JOIN ss_ge_diagnostico sd 
     ON sd.IDDIAGNOSTICO = ad.ID_DIAGNOSTICO
 
 WHERE a.FECHA_ATENCION >= '2025-01-01 00:00:00' 
