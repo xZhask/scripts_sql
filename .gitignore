@@ -1,0 +1,30 @@
+# =============================================================================
+# ESTE REPOSITORIO ES PUBLICO (github.com/xZhask/scripts_sql)
+# No subir datos que identifiquen pacientes: DNI, nombre, o cualquier
+# combinacion que permita reidentificar. Solo se versionan consultas, scripts
+# y CSV AGREGADOS (conteos por IPRESS / nivel / CIE10 / CPMS).
+# =============================================================================
+
+# --- Extractos con DNI y/o NOMBRE DE PACIENTE (datos sensibles de salud) ---
+sigesapol/referencias_ene_ago_2026.csv
+sigesapol/contrarreferencias_ene_ago_2026.csv
+sigesapol/contrarreferencias_agosto_2026.csv
+reporte_referencias_*.xlsx
+
+proyecto_morbilidad/atenciones_seis_dx_noz.csv
+proyecto_morbilidad/atenciones_seis_dx_z.csv
+proyecto_morbilidad/atenciones_sigesapol_26.csv
+proyecto_morbilidad/atenciones_dedup_ene_ago_2026.csv
+
+proyecto_mortalidad/mortalidad_dedup_ene_ago_2026.csv
+proyecto_mortalidad/reporte_mortalidad_paciente_*.xlsx
+
+# --- Copias de respaldo locales ---
+*_backup_*.xlsx
+
+# --- Regla general de seguridad: extractos crudos fila-a-paciente ---
+# (si se genera un extracto nuevo con DNI, nombrarlo con estos prefijos)
+**/extraccion_*.csv
+**/detalle_*.csv
+**/*_dedup_*.csv
+**/*_paciente_*.csv
