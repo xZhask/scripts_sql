@@ -28,3 +28,7 @@ proyecto_mortalidad/reporte_mortalidad_paciente_*.xlsx
 **/detalle_*.csv
 **/*_dedup_*.csv
 **/*_paciente_*.csv
+
+# Listados nominales con DNI (PII) - no versionar
+**/dni_*.xlsx
+**/dni_*.csv
