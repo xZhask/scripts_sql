@@ -1,5 +1,16 @@
 -- DATA GENERAL DE ATENCIONES INCLUYE INFORMACIÓN DE EMERGENCIAS
 -- UNA FILA POR PROCEDIMIENTO REALIZADO EN LA ATENCIÓN
+--
+-- CAMPOS DE LABORATORIO (solo procedimientos con tipo_procedimiento = 2; NULL en el resto):
+--   lab_toma_confirmada : 'SI' si prestacion_procedimientos.confirmar_toma está registrado
+--                         (criterio de "realizado"). 'NO' puede significar no realizado o que
+--                         la IPRESS no usa la confirmación de toma (Callao, Tumbes, postas...).
+--   lab_resultado       : evidencia en laboratorio_archivos_resultados (PDF activo):
+--                         'RESULTADO PROPIO'      -> el procedimiento tiene PDF
+--                         'RESULTADO EN LA ORDEN' -> sin PDF propio, pero otro examen de la misma
+--                                                    orden sí (el PDF se sube por área: BIOQ, HEMO...)
+--                         'SIN RESULTADO'         -> ningún examen de la orden tiene PDF
+--   Se calculan con agregados (no van en el GROUP BY) para no alterar las filas de la sábana.
 COPY (
 WITH em AS (
     SELECT
@@ -23,6 +34,22 @@ WITH em AS (
     WHERE fecha_registro_ingreso >= '2026-03-01'
       AND fecha_registro_ingreso <  '2026-04-01'
       AND id_establecimiento <> 76
+),
+-- MATERIALIZED: se calculan una sola vez (sin esto el plan recorre los resultados por
+-- cada atención y la query pasa de segundos a más de 20 minutos)
+lab_res_pp AS MATERIALIZED (
+    -- procedimientos de laboratorio con PDF de resultado activo
+    SELECT DISTINCT ar.id_prestacion_procedimiento AS id_pp
+    FROM laboratorio_archivos_resultados ar
+    WHERE ar.estado
+),
+lab_res_ord AS MATERIALIZED (
+    -- órdenes de laboratorio con al menos un PDF de resultado activo
+    SELECT DISTINCT ppr.id_lab_rad
+    FROM lab_res_pp r
+    INNER JOIN prestacion_procedimientos ppr
+        ON ppr.id = r.id_pp
+    WHERE ppr.id_lab_rad > 0
 )
 SELECT
     pre.id AS "ID ATENCION",
@@ -99,7 +126,23 @@ SELECT
     em.obs_traslado,
     em.fecha_alta_medica,
     em.obs_elimina_paciente,
-    em.cpms_alta
+    em.cpms_alta,
+
+    -- CAMPOS DE LABORATORIO
+    CASE WHEN bool_or(pp.tipo_procedimiento = 2) THEN
+        CASE WHEN bool_or(pp.tipo_procedimiento = 2 AND COALESCE(pp.confirmar_toma, '') <> '')
+             THEN 'SI' ELSE 'NO' END
+    END AS lab_toma_confirmada,
+
+    CASE MIN(CASE WHEN pp.tipo_procedimiento = 2 THEN
+                  CASE WHEN lr_pp.id_pp IS NOT NULL THEN 1
+                       WHEN lr_ord.id_lab_rad IS NOT NULL THEN 2
+                       ELSE 3 END
+             END)
+        WHEN 1 THEN 'RESULTADO PROPIO'
+        WHEN 2 THEN 'RESULTADO EN LA ORDEN'
+        WHEN 3 THEN 'SIN RESULTADO'
+    END AS lab_resultado
 
 FROM prestaciones pre
 LEFT JOIN asegurados a
@@ -131,10 +174,18 @@ LEFT JOIN (
 LEFT JOIN em
     ON pre.id_tipo_atencion = 2
    AND pre.id_ext = em.id
+-- lab_res_pp / lab_res_ord no tienen duplicados: no multiplican filas
+LEFT JOIN lab_res_pp lr_pp
+    ON lr_pp.id_pp = pp.id
+LEFT JOIN lab_res_ord lr_ord
+    ON pp.tipo_procedimiento = 2
+   AND lr_ord.id_lab_rad = pp.id_lab_rad
 
 WHERE pre.fecha_atencion >= '2026-03-01'
   AND pre.fecha_atencion <  '2026-04-01'
-  AND e.id <> 76
+  AND e.id <> 76  -- EXCLUIR NIVEL III (Hospital Nacional PNP Luis N. Saenz). No usar e.nivel:
+                  -- viene mal cargado para algunos establecimientos (ej. Clínica Angamos
+                  -- figura nivel=2 por temas de tarifario, siendo en realidad Nivel I).
   AND pre.id_estado_reg = 1
 
 GROUP BY
