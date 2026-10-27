@@ -32,3 +32,6 @@ proyecto_mortalidad/reporte_mortalidad_paciente_*.xlsx
 # Listados nominales con DNI (PII) - no versionar
 **/dni_*.xlsx
 **/dni_*.csv
+
+# Extractos fila-a-paciente del cruce ene-set 2026 (con DNI)
+MORBILIDAD ENE-SET 2026/datos/
