@@ -31,8 +31,8 @@ WITH em AS (
         regexp_replace(observacion_elimina_paciente::varchar, E'[\\r\\n\\t]+', ' ', 'g') AS obs_elimina_paciente,
         cpms_alta
     FROM emergencias
-    WHERE fecha_registro_ingreso >= '2026-03-01'
-      AND fecha_registro_ingreso <  '2026-04-01'
+    WHERE fecha_registro_ingreso >= '2026-10-01'
+      AND fecha_registro_ingreso <  '2026-11-01'
       AND id_establecimiento <> 76
 ),
 -- MATERIALIZED: se calculan una sola vez (sin esto el plan recorre los resultados por
@@ -181,8 +181,8 @@ LEFT JOIN lab_res_ord lr_ord
     ON pp.tipo_procedimiento = 2
    AND lr_ord.id_lab_rad = pp.id_lab_rad
 
-WHERE pre.fecha_atencion >= '2026-03-01'
-  AND pre.fecha_atencion <  '2026-04-01'
+WHERE pre.fecha_atencion >= '2026-10-01'
+  AND pre.fecha_atencion <  '2026-11-01'
   AND e.id <> 76  -- EXCLUIR NIVEL III (Hospital Nacional PNP Luis N. Saenz). No usar e.nivel:
                   -- viene mal cargado para algunos establecimientos (ej. Clínica Angamos
                   -- figura nivel=2 por temas de tarifario, siendo en realidad Nivel I).
@@ -226,4 +226,4 @@ GROUP BY
     em.fecha_alta_medica,
     em.obs_elimina_paciente,
     em.cpms_alta
-) TO 'C:/temp/atenciones_feb26.csv' WITH (FORMAT CSV, HEADER);
+) TO 'C:/temp/atenciones_oct26.csv' WITH (FORMAT CSV, HEADER);
