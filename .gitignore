@@ -42,6 +42,7 @@ EGRESOS OCT 2026/datos/
 **/reporte_egresos_hospi_*.xlsx
 **/recursos*_intervenciones_*.xlsx
 **/reporte_intervenciones_*.xlsx
+**/reporte_intervenciones_*.csv
 __pycache__/
 
 # Producción por profesional: detalle con DNI y nombre de pacientes
