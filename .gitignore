@@ -35,3 +35,15 @@ proyecto_mortalidad/reporte_mortalidad_paciente_*.xlsx
 
 # Extractos fila-a-paciente del cruce ene-set 2026 (con DNI)
 MORBILIDAD ENE-SET 2026/datos/
+
+# Extractos fila-a-paciente del cruce de egresos oct 2026 (con DNI)
+EGRESOS OCT 2026/datos/
+**/reporteEgresosHospitalarios*.xlsx
+**/reporte_egresos_hospi_*.xlsx
+**/recursos*_intervenciones_*.xlsx
+**/reporte_intervenciones_*.xlsx
+__pycache__/
+
+# Producción por profesional: detalle con DNI y nombre de pacientes
+PRODUCCION PROFESIONAL 2026/
+**/produccion_*.xlsx
